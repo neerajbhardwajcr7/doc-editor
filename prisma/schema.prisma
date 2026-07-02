@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DocumentRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  documents     Document[]
+  permissions   DocumentPermission[]
+  versions      DocumentVersion[]
+  
+  @@map("users")
+}
+
+model Document {
+  id            String    @id @default(cuid())
+  title         String    @default("Untitled Document")
+  content       String    @default("")
+  
+  ownerId       String
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  permissions   DocumentPermission[]
+  versions      DocumentVersion[]
+  syncQueue     SyncQueueItem[]
+  
+  isPublic      Boolean   @default(false)
+  lastSyncedAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([ownerId])
+  @@map("documents")
+}
+
+model DocumentPermission {
+  id            String    @id @default(cuid())
+  
+  documentId    String
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  role          DocumentRole @default(VIEWER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@unique([documentId, userId])
+  @@index([userId])
+  @@map("document_permissions")
+}
+
+model DocumentVersion {
+  id            String    @id @default(cuid())
+  
+  documentId    String
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  content       String
+  title         String
+  label         String?
+  description   String?
+  
+  createdBy     String
+  createdByUser User      @relation(fields: [createdBy], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([documentId])
+  @@index([createdBy])
+  @@map("document_versions")
+}
+
+model SyncQueueItem {
+  id            String    @id @default(cuid())
+  
+  documentId    String
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  changeType    String
+  position      Int
+  content       String
+  
+  synced        Boolean   @default(false)
+  syncedAt      DateTime?
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([documentId])
+  @@index([synced])
+  @@map("sync_queue")
+}
