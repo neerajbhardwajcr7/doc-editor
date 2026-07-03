@@ -55,7 +55,7 @@ export default function SignUp() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <div>
             <label className="block text-sm font-medium mb-2">Name</label>
             <input
@@ -65,6 +65,7 @@ export default function SignUp() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Your name"
               required
+              autoComplete="off"
             />
           </div>
 
@@ -77,6 +78,7 @@ export default function SignUp() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@example.com"
               required
+              autoComplete="off"
             />
           </div>
 
@@ -89,6 +91,7 @@ export default function SignUp() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
               required
+              autoComplete="new-password"
             />
           </div>
 
