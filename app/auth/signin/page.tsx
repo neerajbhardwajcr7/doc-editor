@@ -42,7 +42,7 @@ export default function SignIn() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <div>
             <label className="block text-sm font-medium mb-2">Email</label>
             <input
@@ -52,6 +52,7 @@ export default function SignIn() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@example.com"
               required
+              autoComplete="off"
             />
           </div>
 
@@ -64,6 +65,7 @@ export default function SignIn() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
               required
+              autoComplete="new-password"
             />
           </div>
 
